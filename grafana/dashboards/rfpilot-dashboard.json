@@ -1,0 +1,38 @@
+{
+  "dashboard": {
+    "title": "RFPilot Operations",
+    "panels": [
+      {
+        "title": "API P95 Latency (ms)",
+        "type": "timeseries",
+        "targets": [{ "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) * 1000" }],
+        "fieldConfig": { "defaults": { "unit": "ms", "thresholds": { "steps": [{"color":"green","value":0},{"color":"yellow","value":500},{"color":"red","value":2000}] } } }
+      },
+      {
+        "title": "Error Rate %",
+        "type": "timeseries",
+        "targets": [{ "expr": "rate(http_request_duration_seconds_count{status=~'5..'}[5m]) / rate(http_request_duration_seconds_count[5m]) * 100" }]
+      },
+      {
+        "title": "AI Generation P95 (seconds)",
+        "type": "timeseries",
+        "targets": [{ "expr": "histogram_quantile(0.95, rate(ai_generation_duration_seconds_bucket[5m]))" }]
+      },
+      {
+        "title": "Active WebSocket Connections",
+        "type": "stat",
+        "targets": [{ "expr": "active_websocket_connections" }]
+      },
+      {
+        "title": "BullMQ Queue Depths (waiting)",
+        "type": "bargauge",
+        "targets": [{ "expr": "bullmq_queue_waiting" }]
+      },
+      {
+        "title": "Circuit Breaker States",
+        "type": "table",
+        "targets": [{ "expr": "circuit_breaker_state" }]
+      }
+    ]
+  }
+}
